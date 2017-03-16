@@ -1,0 +1,46 @@
+= Blank project for batch application using TERASOLUNA Batch Framework for Java (5.x)
+
+This is blank project template for batch application is provided in collaboration with TERASOLUNA Batch Framework for Java (5.x) (Spring Batch + Spring + MyBatis3).
+
+Use this as the starting point of all kinds of development activities.
+
+This blank project can be be beneficial in following ways.
+
+1. The **most standard and ideal baseline configuration and structure** to all the development activities.
+2. Quickly jump to focus on business application.
+
+== Getting Started
+
+To create blank project interactively. +
+Set the groupId, artifactId, version and package to suit your project.
+
+* for CommandPrompt
+
+[source, text]
+----
+C:\xxx> mvn archetype:generate^
+  -DarchetypeGroupId=org.terasoluna.batch^
+  -DarchetypeArtifactId=terasoluna-batch-archetype^
+  -DarchetypeVersion=5.0.0.RELEASE
+----
+
+* for Bash
+
+[source, text]
+----
+$ mvn archetype:generate \
+  -DarchetypeGroupId=org.terasoluna.batch \
+  -DarchetypeArtifactId=terasoluna-batch-archetype \
+  -DarchetypeVersion=5.0.0.RELEASE
+----
+
+== Run
+
+In order to run the blank project, execute the below command.
+
+[source, text]
+----
+$ cd <your artifaceId>
+$ mvn clean dependency:copy-dependencies -DoutputDirectory=lib package
+$ java -cp 'lib/*:target/*' org.springframework.batch.core.launch.support.CommandLineJobRunner META-INF/jobs/job01/job01.xml job01
+----

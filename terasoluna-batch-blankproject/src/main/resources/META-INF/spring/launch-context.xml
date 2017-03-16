@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:p="http://www.springframework.org/schema/p"
+       xmlns:batch="http://www.springframework.org/schema/batch"
+       xmlns:util="http://www.springframework.org/schema/util"
+       xmlns:jdbc="http://www.springframework.org/schema/jdbc"
+       xmlns:c="http://www.springframework.org/schema/c"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+            http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+            http://www.springframework.org/schema/batch http://www.springframework.org/schema/batch/spring-batch.xsd
+            http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd
+            http://www.springframework.org/schema/jdbc http://www.springframework.org/schema/jdbc/spring-jdbc.xsd">
+
+    <context:property-placeholder location="classpath:batch-application.properties"
+            system-properties-mode="OVERRIDE"
+            ignore-resource-not-found="false"
+            ignore-unresolvable="true"
+            order="1"/>
+
+    <!-- framework definitions -->
+    <bean id="adminDataSource" class="org.apache.commons.dbcp2.BasicDataSource"
+          destroy-method="close"
+          p:driverClassName="${admin.jdbc.driver}"
+          p:url="${admin.jdbc.url}"
+          p:username="${admin.jdbc.username}"
+          p:password="${admin.jdbc.password}"
+          p:maxTotal="10"
+          p:minIdle="1"
+          p:maxWaitMillis="5000"
+          p:defaultAutoCommit="false"/>
+
+    <bean id="adminTransactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager"
+          p:dataSource-ref="adminDataSource"
+          p:rollbackOnCommitFailure="true"/>
+
+    <batch:job-repository id="jobRepository"
+            data-source="adminDataSource"
+            transaction-manager="adminTransactionManager"
+            isolation-level-for-create="READ_COMMITTED"/>
+
+    <bean id="jobRegistry" class="org.springframework.batch.core.configuration.support.MapJobRegistry"/>
+
+    <bean id="jobExplorer" class="org.springframework.batch.core.explore.support.JobExplorerFactoryBean"
+          p:dataSource-ref="adminDataSource"/>
+
+    <bean id="jobParametersConverter" class="org.springframework.batch.core.jsr.JsrJobParametersConverter"
+          c:dataSource-ref="adminDataSource" />
+
+    <bean id="jobLauncher" class="org.springframework.batch.core.launch.support.SimpleJobLauncher"
+          p:jobRepository-ref="jobRepository" />
+
+    <bean id="jobOperator" class="org.springframework.batch.core.launch.support.SimpleJobOperator"
+          p:jobRepository-ref="jobRepository"
+          p:jobRegistry-ref="jobRegistry"
+          p:jobExplorer-ref="jobExplorer"
+          p:jobParametersConverter-ref="jobParametersConverter"
+          p:jobLauncher-ref="jobLauncher" />
+
+    <bean class="org.springframework.batch.core.configuration.support.JobRegistryBeanPostProcessor"
+          p:jobRegistry-ref="jobRegistry"/>
+
+    <bean id="exitCodeMapper" class="org.springframework.batch.core.launch.support.SimpleJvmExitCodeMapper">
+        <property name="mapping">
+            <util:map id="exitCodeMapper" key-type="java.lang.String"
+                      value-type="java.lang.Integer">
+                <!-- ExitStatus -->
+                <entry key="NOOP" value="0" />
+                <entry key="COMPLETED" value="0" />
+                <entry key="STOPPED" value="255" />
+                <entry key="FAILED" value="255" />
+                <entry key="UNKNOWN" value="255" />
+            </util:map>
+        </property>
+    </bean>
+
+    <jdbc:initialize-database data-source="adminDataSource" enabled="${data-source.initialize.enabled:false}" ignore-failures="ALL">
+        <jdbc:script location="${spring-batch.schema.script}" />
+        <jdbc:script location="${terasoluna-batch.commit.script}" />
+    </jdbc:initialize-database>
+
+    <!-- Job-common definitions -->
+    <bean id="jobDataSource" class="org.apache.commons.dbcp2.BasicDataSource"
+          destroy-method="close"
+          p:driverClassName="${jdbc.driver}"
+          p:url="${jdbc.url}"
+          p:username="${jdbc.username}"
+          p:password="${jdbc.password}"
+          p:maxTotal="10"
+          p:minIdle="1"
+          p:maxWaitMillis="5000"
+          p:defaultAutoCommit="false" />
+
+    <bean id="jobTransactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager"
+          p:dataSource-ref="jobDataSource"
+          p:rollbackOnCommitFailure="true" />
+
+    <bean id="messageSource" class="org.springframework.context.support.ResourceBundleMessageSource"
+          p:basenames="classpath:META-INF/i18n/application-messages" />
+
+    <bean id="validator" class="org.springframework.batch.item.validator.SpringValidator"
+          p:validator-ref="beanValidator"/>
+
+    <bean id="beanValidator"
+          class="org.springframework.validation.beanvalidation.LocalValidatorFactoryBean" />
+
+    <bean id="jobSqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean"
+          p:dataSource-ref="jobDataSource" >
+        <property name="configuration">
+            <bean class="org.apache.ibatis.session.Configuration"
+                p:localCacheScope="STATEMENT"
+                p:lazyLoadingEnabled="true"
+                p:aggressiveLazyLoading="false"
+                p:defaultFetchSize="1000"
+                p:defaultExecutorType="REUSE" />
+        </property>
+    </bean>
+
+    <bean id="batchModeSqlSessionTemplate" class="org.mybatis.spring.SqlSessionTemplate"
+          c:sqlSessionFactory-ref="jobSqlSessionFactory"
+          c:executorType="BATCH" />
+
+</beans>

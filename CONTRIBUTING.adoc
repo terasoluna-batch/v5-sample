@@ -1,0 +1,159 @@
+= How to contribute Development of the Blank project
+
+This document describes how to contribute the v5-sample updates.
+
+The v5-sample is a https://maven.apache.org/[Maven] based blank java project template for a quick start.
+See https://maven.apache.org/run-maven/index.html[Building a Project with Maven].
+
+Contribution procedures are follows:
+
+== Create a new issue
+
+Please create a new issue from https://github.com/terasoluna-batch/v5-sample/issues/new[here] for contributing(bug report, improvement or new content), and get an issue number(tracking id).
+
+[NOTE]
+.Supported language
+====
+English only.
+====
+
+* Please write the contribution overview into the title area.
+* Please write the contribution detail into the comment area.
+
+e.g.)
+
+[source, text]
+----
+## Description
+In pom.xml file, there is a mistake in the below sentence.
+
+`"<artifactId>projctName</artifactId>"`
+
+## Possible Solutions
+Modify to `"<artifactId>projectName</artifactId>"`
+
+## Affects Version/s
+* 5.0.0.RELEASE
+
+## Fix Version/s
+(To be written later by project member)
+
+## Issue Links
+N/A
+----
+
+== Fork a repository
+
+Please fork the ``terasoluna-batch/v5-sample`` into your account repository of GitHub.
+
+* Click a "Fork" button on GitHub web user interface.
+
+== Clone a repository
+
+Please clone a forked repository into your local machine.
+
+e.g.)
+
+[source, text]
+----
+$ git clone https://github.com/{your account}/v5-sample.git
+----
+
+== Create a work branch
+
+Please create a work branch on the master branch into your local repository.
+
+[NOTE]
+.Recommended work branch name
+====
+issues/{issue number}_{short description}
+====
+
+e.g.)
+
+[source, text]
+----
+$ git checkout master
+$ git checkout -b issues/999_typo-in-POM
+----
+
+
+== Modify the terasoluna-batch
+
+Modify the v5-sample for contributing.
+
+== Build projects and execute tests
+
+Please build all projects and execute all tests using the https://maven.apache.org/[Maven].
+
+[source, text]
+----
+$ cd {root directory of your local repository}
+$ mvn clean install
+----
+
+If a maven build result has failed, please modify a source code again.
+
+== Commit a modification
+
+Please commit a modification.
+
+[NOTE]
+.Commit comment format
+====
+"{modification overview} #{issue number}"
+====
+
+[NOTE]
+.Supported language
+====
+English only.
+====
+
+e.g.)
+
+[source, text]
+----
+$ git commit -a -m "Fixes typos in POM #999"
+----
+
+
+== Push a work branch
+
+Please push a work branch to the GitHub.
+
+e.g.)
+
+[source, text]
+----
+$ git push origin issues/999_typo-in-POM
+----
+
+== Create a pull request
+
+Please create a pull request via GitHub web user interface.
+For details, please refer to the https://help.github.com/articles/creating-a-pull-request/[GitHub document-Creating a pull request].
+
+[NOTE]
+.Note: Supported language
+====
+English only.
+====
+
+* Please write the modification overview into the title area and add the #{issue number} at its end. (Default is commit comment or work branch name)
+* Please write the modification detail into the comment area. (If needed)
+* Please include the issue number(``#{issue number}`` format) to track a modification into the comment area.
+
+e.g.)
+
+[cols="30,70", options="header"]
+|===
+|Area
+|Content
+
+|Title
+|Fixes typos in POM #999
+
+|Comment
+|Please review #999 .
+|===
