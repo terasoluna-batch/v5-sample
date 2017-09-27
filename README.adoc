@@ -18,9 +18,9 @@ Set the groupId, artifactId, version and package to suit your project.
 
 [source, text]
 ----
-C:\xxx> mvn archetype:generate^
-  -DarchetypeGroupId=org.terasoluna.batch^
-  -DarchetypeArtifactId=terasoluna-batch-archetype^
+C:\xxx>mvn archetype:generate ^
+  -DarchetypeGroupId=org.terasoluna.batch ^
+  -DarchetypeArtifactId=terasoluna-batch-archetype ^
   -DarchetypeVersion=5.0.0.RELEASE
 ----
 
@@ -38,9 +38,24 @@ $ mvn archetype:generate \
 
 In order to run the blank project, execute the below command.
 
+* for CommandPrompt
+
 [source, text]
 ----
-$ cd <your artifaceId>
+C:\xxx>cd [artifactId]
+C:\xxx>mvn clean dependency:copy-dependencies -DoutputDirectory=lib package
+C:\xxx>java -cp "lib/*;target/*" ^
+org.springframework.batch.core.launch.support.CommandLineJobRunner ^
+META-INF/jobs/job01.xml job01
+----
+
+* for Bash
+
+[source, text]
+----
+$ cd [artifactId]
 $ mvn clean dependency:copy-dependencies -DoutputDirectory=lib package
-$ java -cp 'lib/*:target/*' org.springframework.batch.core.launch.support.CommandLineJobRunner META-INF/jobs/job01/job01.xml job01
+$ java -cp 'lib/*;target/*' \
+org.springframework.batch.core.launch.support.CommandLineJobRunner \
+META-INF/jobs/job01.xml job01
 ----

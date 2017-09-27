@@ -97,7 +97,7 @@
           p:rollbackOnCommitFailure="true" />
 
     <bean id="messageSource" class="org.springframework.context.support.ResourceBundleMessageSource"
-          p:basenames="classpath:META-INF/i18n/application-messages" />
+          p:basenames="i18n/application-messages" />
 
     <bean id="validator" class="org.springframework.batch.item.validator.SpringValidator"
           p:validator-ref="beanValidator"/>
@@ -121,4 +121,6 @@
           c:sqlSessionFactory-ref="jobSqlSessionFactory"
           c:executorType="BATCH" />
 
+    <bean id="jobResourcelessTransactionManager"
+          class="org.springframework.batch.support.transaction.ResourcelessTransactionManager"/>
 </beans>

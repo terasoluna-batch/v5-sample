@@ -15,8 +15,6 @@
  */
 package xxxxxx.yyyyyy.zzzzzz.projectName.job01;
 
-import xxxxxx.yyyyyy.zzzzzz.projectName.job01.Employee;
-
 import java.util.List;
 
 /**

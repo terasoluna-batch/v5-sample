@@ -28,12 +28,13 @@
     <bean id="jobRequestPollTask" class="org.terasoluna.batch.async.db.JobRequestPollTask"
           c:transactionManager-ref="adminTransactionManager"
           c:jobOperator-ref="jobOperator"
-          c:batchJobRequestMapper-ref="batchJobRequestMapper"
+          c:batchJobRequestRepository-ref="batchJobRequestRepository"
           c:daemonTaskExecutor-ref="daemonTaskExecutor"
           c:automaticJobRegistrar-ref="automaticJobRegistrar" />
 
     <bean id="adminSqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean"
-          p:dataSource-ref="adminDataSource" >
+          p:dataSource-ref="adminDataSource"
+          p:databaseIdProvider-ref="databaseIdProvider">
         <property name="configuration">
             <bean class="org.apache.ibatis.session.Configuration"
                   p:localCacheScope="STATEMENT"
@@ -44,8 +45,8 @@
         </property>
     </bean>
 
-    <bean id="batchJobRequestMapper" class="org.mybatis.spring.mapper.MapperFactoryBean"
-        p:mapperInterface="org.terasoluna.batch.async.db.repository.BatchJobRequestMapper"
+    <bean id="batchJobRequestRepository" class="org.mybatis.spring.mapper.MapperFactoryBean"
+        p:mapperInterface="org.terasoluna.batch.async.db.repository.BatchJobRequestRepository"
         p:sqlSessionFactory-ref="adminSqlSessionFactory" />
 
     <bean id="automaticJobRegistrar" class="org.springframework.batch.core.configuration.support.AutomaticJobRegistrar">
@@ -61,5 +62,13 @@
 
     <bean class="org.springframework.batch.core.configuration.support.JobRegistryBeanPostProcessor"
         p:jobRegistry-ref="jobRegistry" />
+
+    <bean id="databaseIdProvider" class="org.apache.ibatis.mapping.VendorDatabaseIdProvider">
+        <property name="properties">
+            <props>
+                <prop key="Oracle">oracle</prop>
+            </props>
+        </property>
+    </bean>
 
 </beans>

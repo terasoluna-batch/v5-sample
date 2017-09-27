@@ -1,6 +1,14 @@
 import groovy.xml.XmlUtil
+import org.w3c.dom.Document
+import org.w3c.dom.Element
+import org.w3c.dom.NodeList
 
+import javax.xml.parsers.DocumentBuilderFactory
+import javax.xml.transform.TransformerFactory
+import javax.xml.transform.dom.DOMSource
+import javax.xml.transform.stream.StreamResult
 import java.nio.file.Files
+import java.nio.file.Path
 import java.nio.file.StandardCopyOption
 
 final def ROOT_DIR = 'terasoluna-batch-blankproject/'
@@ -21,14 +29,14 @@ println '### Ph-1. move to __packageInPathFormat__ in resources.'
 
 def metaPackage = new File(projectDir, 'src/main/resources/__packageInPathFormat__')
 
-def moveToMetaPackage() {
+def moveToMetaPackage(File metaPackage, File projectDir, String oldPackage) {
   if (! metaPackage.mkdir()) {
       println '** fail to create __packageInPathFormat__ directory.'
       System.exit 3
   }
 
   Files.move(
-          new File(projectDir, "src/main/resources/${OLD_PACKAGE}__artifactId__").toPath(),
+          new File(projectDir, "src/main/resources/${oldPackage}__artifactId__").toPath(),
           new File(projectDir, 'src/main/resources/__packageInPathFormat__').toPath(),
           StandardCopyOption.REPLACE_EXISTING)
 
@@ -38,8 +46,8 @@ def moveToMetaPackage() {
   }
 }
 
-if (! metaPackage) {
-  moveToMetaPackage()
+if (!metaPackage.exists()) {
+  moveToMetaPackage(metaPackage, projectDir, OLD_PACKAGE)
 } else {
   println "** exists ${metaPackage.toPath()}, skipping."
 }
@@ -182,5 +190,77 @@ new BufferedWriter(new FileWriter(new File(archetypeDir, 'pom.xml'))).withWriter
 }
 
 Files.delete(orgPath)
+
+println "### Ph-3. re-create empty pom's tag."
+
+static void appendNode(Document doc, String nodeName) {
+    findPropertiesNode(doc).appendChild doc.createElement(nodeName)
+}
+
+static boolean alreadyExistsNode(Document doc, String nodeName) {
+    findPropertiesNode(doc).getElementsByTagName(nodeName).length > 0
+}
+
+static Element findPropertiesNode(Document doc) {
+    Element node = (Element) findIncludeSettingsNode(doc)
+            ?.getElementsByTagName('properties')
+            ?.item(0)
+    if (node == null) {
+        throw new IllegalArgumentException("Can not find properties node.")
+    }
+    return node
+}
+
+static Element findIncludeSettingsNode(Document doc) {
+    NodeList nodeList = doc.getElementsByTagName('profile')
+    for (int i = 0; i < nodeList.length; i++) {
+        Element node = (Element) nodeList.item(i)
+        if (node.getElementsByTagName('id')
+                .item(0)
+                .getChildNodes()
+                .item(0)
+                .nodeValue == 'IncludeSettings') {
+            return node
+        }
+    }
+    throw new IllegalArgumentException("Can not find IncludeSettings node.")
+}
+
+static void outputXML(File f, Document doc) {
+    def out = new ByteArrayOutputStream()
+    TransformerFactory.newInstance().newTransformer()
+            .transform(new DOMSource(doc), new StreamResult(out))
+
+    def xml = out.toString("UTF-8")
+            .replaceFirst('(<project xmlns)',
+            '\r\n$1')
+            .replaceFirst('<(exclude-property)/><(exclude-log)/>',
+            '    <$1/>\r\n                <$2/>\r\n            ')
+
+    new FileWriter(f).withWriter { w ->
+        w.write(xml)
+        w.flush()
+    }
+}
+
+Path projectPom = new File(projectDir, 'pom.xml').toPath()
+Path orgProjectPom = new File(projectDir, 'pom.xml.org').toPath()
+
+Files.move(projectPom, orgProjectPom)
+
+Document projectDoc = DocumentBuilderFactory.newInstance().newDocumentBuilder()
+        .parse orgProjectPom.toFile()
+
+if (!alreadyExistsNode(projectDoc, 'exclude-property')) {
+    appendNode projectDoc, 'exclude-property'
+}
+
+if (!alreadyExistsNode(projectDoc, 'exclude-log')) {
+    appendNode projectDoc, 'exclude-log'
+}
+
+outputXML projectPom.toFile(), projectDoc
+
+Files.delete orgProjectPom
 
 println "normal end."
