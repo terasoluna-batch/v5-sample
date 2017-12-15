@@ -9,37 +9,6 @@ This blank project can be be beneficial in following ways.
 1. The **most standard and ideal baseline configuration and structure** to all the development activities.
 2. Quickly jump to focus on business application.
 
-[WARNING]
-.On notes after project creation:
-====
-It is necessary to change the version of TERASOLUNA Batch 5.x defined in the generated ``pom.xml`` from **5.0.1-SNAPSHOT** to **5.0.1.RELEASE**.
-
-[source,xml]
-.Before:
-----
-<properties>
-    <!-- omiited -->
-
-    <terasoluna-batch.version>5.0.1-SNAPSHOT</terasoluna-batch.version>
-
-    <!-- omiited -->
-</properties>
-----
-
-[source,xml]
-.After:
-----
-<properties>
-    <!-- omiited -->
-
-    <terasoluna-batch.version>5.0.1.RELEASE</terasoluna-batch.version>
-
-    <!-- omiited -->
-</properties>
-----
-
-====
-
 == Getting Started
 
 To create blank project interactively. +
@@ -52,7 +21,7 @@ Set the groupId, artifactId, version and package to suit your project.
 C:\xxx>mvn archetype:generate ^
   -DarchetypeGroupId=org.terasoluna.batch ^
   -DarchetypeArtifactId=terasoluna-batch-archetype ^
-  -DarchetypeVersion=5.0.1.RELEASE
+  -DarchetypeVersion=5.1.0.RELEASE
 ----
 
 * for Bash
@@ -62,7 +31,7 @@ C:\xxx>mvn archetype:generate ^
 $ mvn archetype:generate \
   -DarchetypeGroupId=org.terasoluna.batch \
   -DarchetypeArtifactId=terasoluna-batch-archetype \
-  -DarchetypeVersion=5.0.1.RELEASE
+  -DarchetypeVersion=5.1.0.RELEASE
 ----
 
 == Run

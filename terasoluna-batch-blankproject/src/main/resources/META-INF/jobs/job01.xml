@@ -12,7 +12,6 @@
 
     <import resource="classpath:META-INF/spring/job-base-context.xml"/>
 
-    <context:annotation-config/>
     <context:component-scan base-package="xxxxxx.yyyyyy.zzzzzz.projectName.job01" />
     <mybatis:scan           base-package="xxxxxx.yyyyyy.zzzzzz.projectName.job01" factory-ref="jobSqlSessionFactory"/>
 
