@@ -21,7 +21,7 @@ Set the groupId, artifactId, version and package to suit your project.
 C:\xxx>mvn archetype:generate ^
   -DarchetypeGroupId=org.terasoluna.batch ^
   -DarchetypeArtifactId=terasoluna-batch-archetype ^
-  -DarchetypeVersion=5.0.3.RELEASE
+  -DarchetypeVersion=5.0.4.RELEASE
 ----
 
 * for Bash
@@ -31,7 +31,7 @@ C:\xxx>mvn archetype:generate ^
 $ mvn archetype:generate \
   -DarchetypeGroupId=org.terasoluna.batch \
   -DarchetypeArtifactId=terasoluna-batch-archetype \
-  -DarchetypeVersion=5.0.3.RELEASE
+  -DarchetypeVersion=5.0.4.RELEASE
 ----
 
 == Run
