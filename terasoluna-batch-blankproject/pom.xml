@@ -6,7 +6,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>xxxxxx.yyyyyy.zzzzzz</groupId>
     <artifactId>projectName</artifactId>
-    <version>5.1.0.RELEASE</version>
+    <version>5.1.1.RELEASE</version>
 
     <name>TERASOLUNA Batch Framework for Java (5.x) Blank Project</name>
     <description>Batch Blank Project using TERASOLUNA Batch Framework for Java (5.x)</description>
@@ -52,7 +52,8 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
         <io.spring.platform.version>Brussels-SR5</io.spring.platform.version>
-        <terasoluna-batch.version>5.1.0.RELEASE</terasoluna-batch.version>
+        <spring-framework-bom.version>4.3.14.RELEASE</spring-framework-bom.version>
+        <terasoluna-batch.version>5.1.1.RELEASE</terasoluna-batch.version>
 
         <maven-compiler-plugin.version>3.5.1</maven-compiler-plugin.version>
         <maven-jar-plugin.version>3.0.2</maven-jar-plugin.version>
@@ -60,6 +61,14 @@
 
     <dependencyManagement>
         <dependencies>
+            <dependency>
+                <groupId>org.springframework</groupId>
+                <artifactId>spring-framework-bom</artifactId>
+                <version>${spring-framework-bom.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+
             <dependency>
                 <groupId>io.spring.platform</groupId>
                 <artifactId>platform-bom</artifactId>
