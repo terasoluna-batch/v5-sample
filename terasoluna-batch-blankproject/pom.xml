@@ -6,7 +6,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>xxxxxx.yyyyyy.zzzzzz</groupId>
     <artifactId>projectName</artifactId>
-    <version>5.1.1.RELEASE</version>
+    <version>5.2.1.RELEASE</version>
 
     <name>TERASOLUNA Batch Framework for Java (5.x) Blank Project</name>
     <description>Batch Blank Project using TERASOLUNA Batch Framework for Java (5.x)</description>
@@ -48,31 +48,22 @@
     </repositories>
 
     <properties>
-        <jdk.version>1.8</jdk.version>
+        <java-version>1.8</java-version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
-        <io.spring.platform.version>Brussels-SR5</io.spring.platform.version>
-        <spring-framework-bom.version>4.3.14.RELEASE</spring-framework-bom.version>
-        <terasoluna-batch.version>5.1.1.RELEASE</terasoluna-batch.version>
+        <org.springframework.boot.version>2.1.2.RELEASE</org.springframework.boot.version>
+        <terasoluna-batch.version>5.2.1.RELEASE</terasoluna-batch.version>
 
-        <maven-compiler-plugin.version>3.5.1</maven-compiler-plugin.version>
-        <maven-jar-plugin.version>3.0.2</maven-jar-plugin.version>
+        <maven-compiler-plugin.version>3.8.0</maven-compiler-plugin.version>
+        <maven-jar-plugin.version>3.1.0</maven-jar-plugin.version>
     </properties>
 
     <dependencyManagement>
         <dependencies>
             <dependency>
-                <groupId>org.springframework</groupId>
-                <artifactId>spring-framework-bom</artifactId>
-                <version>${spring-framework-bom.version}</version>
-                <type>pom</type>
-                <scope>import</scope>
-            </dependency>
-
-            <dependency>
-                <groupId>io.spring.platform</groupId>
-                <artifactId>platform-bom</artifactId>
-                <version>${io.spring.platform.version}</version>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-dependencies</artifactId>
+                <version>${org.springframework.boot.version}</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
@@ -91,7 +82,7 @@
         </dependency>
 
         <dependency>
-            <groupId>org.hibernate</groupId>
+            <groupId>org.hibernate.validator</groupId>
             <artifactId>hibernate-validator</artifactId>
         </dependency>
 
@@ -140,10 +131,10 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
                 <configuration>
-                    <source>${jdk.version}</source>
-                    <target>${jdk.version}</target>
-                    <testSource>${jdk.version}</testSource>
-                    <testTarget>${jdk.version}</testTarget>
+                    <source>${java-version}</source>
+                    <target>${java-version}</target>
+                    <testSource>${java-version}</testSource>
+                    <testTarget>${java-version}</testTarget>
                     <encoding>${project.build.sourceEncoding}</encoding>
                 </configuration>
             </plugin>
@@ -182,6 +173,16 @@
             <properties>
                 <exclude-property>batch-application.properties</exclude-property>
                 <exclude-log>logback.xml</exclude-log>
+            </properties>
+        </profile>
+
+        <profile>
+            <id>jdk11</id>
+            <activation>
+                <jdk>11</jdk>
+            </activation>
+            <properties>
+                <java-version>11</java-version>
             </properties>
         </profile>
     </profiles>
