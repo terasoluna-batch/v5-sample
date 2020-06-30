@@ -105,7 +105,7 @@ doc.appendNode {
                 }
                 id 'central'
                 name 'Maven Central repository'
-                url 'http://repo1.maven.org/maven2/'
+                url 'https://repo1.maven.org/maven2/'
             }
 
             repository {
