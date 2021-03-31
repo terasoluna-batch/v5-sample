@@ -157,6 +157,12 @@ doc.appendNode {
                                     goals {
                                         goal 'sign'
                                     }
+                                    configuration {
+                                        gpgArguments {
+                                            arg '--pinentry-mode'
+                                            arg 'loopback'
+                                        }
+                                    }
                                 }
                             }
 
