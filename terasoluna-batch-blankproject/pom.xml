@@ -6,7 +6,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>xxxxxx.yyyyyy.zzzzzz</groupId>
     <artifactId>projectName</artifactId>
-    <version>5.3.0.RELEASE</version>
+    <version>5.3.1.RELEASE</version>
 
     <name>TERASOLUNA Batch Framework for Java (5.x) Blank Project</name>
     <description>Batch Blank Project using TERASOLUNA Batch Framework for Java (5.x)</description>
@@ -51,8 +51,8 @@
         <java-version>1.8</java-version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
-        <org.springframework.boot.version>2.2.4.RELEASE</org.springframework.boot.version>
-        <terasoluna-batch.version>5.3.0.RELEASE</terasoluna-batch.version>
+        <org.springframework.boot.version>2.2.12.RELEASE</org.springframework.boot.version>
+        <terasoluna-batch.version>5.3.1.RELEASE</terasoluna-batch.version>
 
         <javax.el.version>3.0.0</javax.el.version>
 
