@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:batch="http://www.springframework.org/schema/batch"
+       xmlns:p="http://www.springframework.org/schema/p"
+       xmlns:mybatis="http://mybatis.org/schema/mybatis-spring"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans https://www.springframework.org/schema/beans/spring-beans.xsd
+             http://www.springframework.org/schema/context https://www.springframework.org/schema/context/spring-context.xsd
+             http://www.springframework.org/schema/batch https://www.springframework.org/schema/batch/spring-batch.xsd
+             http://mybatis.org/schema/mybatis-spring http://mybatis.org/schema/mybatis-spring.xsd">
+
+    <import resource="classpath:META-INF/spring/job-base-context.xml"/>
+
+    <context:component-scan base-package="xxxxxx.yyyyyy.zzzzzz.projectName.job01" />
+    <mybatis:scan           base-package="xxxxxx.yyyyyy.zzzzzz.projectName.job01" factory-ref="jobSqlSessionFactory"/>
+
+    <bean id="employeeReader" class="org.springframework.batch.item.support.ListItemReader" scope="step">
+        <constructor-arg>
+            <list value-type="xxxxxx.yyyyyy.zzzzzz.projectName.job01.Employee">
+                <bean class="xxxxxx.yyyyyy.zzzzzz.projectName.job01.Employee" p:empId="1" p:empName="scott" />
+                <bean class="xxxxxx.yyyyyy.zzzzzz.projectName.job01.Employee" p:empId="2" p:empName="virgil" />
+                <bean class="xxxxxx.yyyyyy.zzzzzz.projectName.job01.Employee" p:empId="3" p:empName="gordon" />
+                <bean class="xxxxxx.yyyyyy.zzzzzz.projectName.job01.Employee" p:empId="4" p:empName="john" />
+                <bean class="xxxxxx.yyyyyy.zzzzzz.projectName.job01.Employee" p:empId="5" p:empName="alan" />
+            </list>
+        </constructor-arg>
+    </bean>
+
+    <bean id="employeeWriter" class="org.springframework.batch.item.file.FlatFileItemWriter"
+            p:resource="file:target/output.csv">
+        <property name="lineAggregator">
+            <bean class="org.springframework.batch.item.file.transform.DelimitedLineAggregator"
+                    p:delimiter=",">
+                <property name="fieldExtractor">
+                    <bean class="org.springframework.batch.item.file.transform.BeanWrapperFieldExtractor"
+                        p:names="empId,empName"/>
+                </property>
+            </bean>
+        </property>
+    </bean>
+
+    <batch:job id="job01" job-repository="jobRepository">
+        <batch:step id="job01.step01">
+            <batch:tasklet transaction-manager="jobTransactionManager">
+                <batch:chunk reader="employeeReader"
+                             processor="employeeProcessor"
+                             writer="employeeWriter" commit-interval="10" />
+            </batch:tasklet>
+        </batch:step>
+    </batch:job>
+
+</beans>
