@@ -6,7 +6,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>xxxxxx.yyyyyy.zzzzzz</groupId>
     <artifactId>projectName</artifactId>
-    <version>5.4.0.RELEASE</version>
+    <version>5.5.0.RELEASE</version>
 
     <name>TERASOLUNA Batch Framework for Java (5.x) Blank Project</name>
     <description>Batch Blank Project using TERASOLUNA Batch Framework for Java (5.x)</description>
@@ -44,19 +44,21 @@
             <id>terasoluna-batch-snapshots</id>
             <url>http://repo.terasoluna.org/nexus/content/repositories/terasoluna-batch-snapshots/</url>
         </repository>
+
     </repositories>
 
     <properties>
-        <java-version>1.8</java-version>
+        <java-version>17</java-version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
-        <org.springframework.boot.version>2.4.1</org.springframework.boot.version>
-        <terasoluna-batch.version>5.4.0.RELEASE</terasoluna-batch.version>
+        <org.springframework.boot.version>3.0.1</org.springframework.boot.version>
+        <terasoluna-batch.version>5.5.0.RELEASE</terasoluna-batch.version>
 
+        <maven-compiler-plugin.version>3.10.1</maven-compiler-plugin.version>
+        <maven-jar-plugin.version>3.2.2</maven-jar-plugin.version>
 
-
-        <maven-compiler-plugin.version>3.8.1</maven-compiler-plugin.version>
-        <maven-jar-plugin.version>3.1.1</maven-jar-plugin.version>
+        <!-- == Jakarta == -->
+        <jakarta.el.version>4.0.2</jakarta.el.version>
     </properties>
 
     <dependencyManagement>
@@ -72,6 +74,11 @@
                 <groupId>org.terasoluna.batch</groupId>
                 <artifactId>terasoluna-batch</artifactId>
                 <version>${terasoluna-batch.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.glassfish</groupId>
+                <artifactId>jakarta.el</artifactId>
+                <version>${jakarta.el.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
@@ -142,12 +149,6 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-jar-plugin</artifactId>
-                <configuration>
-                    <excludes>
-                        <exclude>${exclude-property}</exclude>
-                        <exclude>${exclude-log}</exclude>
-                    </excludes>
-                </configuration>
             </plugin>
         </plugins>
     </build>
@@ -159,10 +160,14 @@
             <activation>
                 <activeByDefault>true</activeByDefault>
             </activation>
-            <properties>
-                <exclude-property/>
-                <exclude-log/>
-            </properties>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-jar-plugin</artifactId>
+                    </plugin>
+                </plugins>
+            </build>
         </profile>
 
         <!-- Excluding application properties and log settings into package. -->
@@ -171,21 +176,20 @@
             <activation>
                 <activeByDefault>false</activeByDefault>
             </activation>
-            <properties>
-                <exclude-property>batch-application.properties</exclude-property>
-                <exclude-log>logback.xml</exclude-log>
-            </properties>
-        </profile>
-
-        <profile>
-            <id>jdk11</id>
-            <activation>
-                <jdk>11</jdk>
-            </activation>
-            <properties>
-                <java-version>11</java-version>
-            </properties>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-jar-plugin</artifactId>
+                        <configuration>
+                            <excludes>
+                                <exclude>batch-application.properties</exclude>
+                                <exclude>logback.xml</exclude>
+                            </excludes>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
         </profile>
     </profiles>
-
 </project>
