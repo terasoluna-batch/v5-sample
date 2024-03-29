@@ -14,6 +14,7 @@ This blank project can be be beneficial in following ways.
 To create blank project interactively. +
 Set the groupId, artifactId, version and package to suit your project.
 
+==== For Java Config
 * for CommandPrompt(Windows)
 
 [source, text]
@@ -21,7 +22,7 @@ Set the groupId, artifactId, version and package to suit your project.
 C:\xxx>mvn archetype:generate ^
   -DarchetypeGroupId=org.terasoluna.batch ^
   -DarchetypeArtifactId=terasoluna-batch-archetype ^
-  -DarchetypeVersion=5.5.0.RELEASE
+  -DarchetypeVersion=5.6.0.RELEASE
 ----
 
 * for Bash(Unix, Linux, ...)
@@ -31,13 +32,58 @@ C:\xxx>mvn archetype:generate ^
 $ mvn archetype:generate \
   -DarchetypeGroupId=org.terasoluna.batch \
   -DarchetypeArtifactId=terasoluna-batch-archetype \
-  -DarchetypeVersion=5.5.0.RELEASE
+  -DarchetypeVersion=5.6.0.RELEASE
+----
+
+==== For XML Config
+* for CommandPrompt(Windows)
+
+[source, text]
+----
+C:\xxx>mvn archetype:generate ^
+  -DarchetypeGroupId=org.terasoluna.batch ^
+  -DarchetypeArtifactId=terasoluna-batch-xmlconfig-archetype ^
+  -DarchetypeVersion=5.6.0.RELEASE
+----
+
+* for Bash(Unix, Linux, ...)
+
+[source, text]
+----
+$ mvn archetype:generate \
+  -DarchetypeGroupId=org.terasoluna.batch \
+  -DarchetypeArtifactId=terasoluna-batch-xmlconfig-archetype \
+  -DarchetypeVersion=5.6.0.RELEASE
 ----
 
 == Run
 
 In order to run the blank project, execute the below command.
 
+==== For Java Config
+* for CommandPrompt(Windows)
+
+[source, text]
+----
+C:\xxx>cd [artifactId]
+C:\xxx>mvn clean dependency:copy-dependencies -DoutputDirectory=lib package
+C:\xxx>java -cp "lib/*;target/*" ^
+org.springframework.batch.core.launch.support.CommandLineJobRunner ^
+org.terasoluna.batch.sample.jobs.Job01Config job01
+----
+
+* for Bash(Unix, Linux, ...)
+
+[source, text]
+----
+$ cd [artifactId]
+$ mvn clean dependency:copy-dependencies -DoutputDirectory=lib package
+$ java -cp 'lib/*:target/*' \
+org.springframework.batch.core.launch.support.CommandLineJobRunner \
+org.terasoluna.batch.sample.jobs.Job01Config job01
+----
+
+==== For XML Config
 * for CommandPrompt(Windows)
 
 [source, text]

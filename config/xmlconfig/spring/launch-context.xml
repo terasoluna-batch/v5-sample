@@ -15,7 +15,6 @@
 
     <context:property-placeholder location="classpath:batch-application.properties"
             ignore-resource-not-found="false"
-            ignore-unresolvable="true"
             order="1"/>
 
     <!-- framework definitions -->
@@ -48,8 +47,11 @@
     <bean id="jobParametersConverter" class="org.terasoluna.batch.converter.JobParametersConverterImpl"
           c:dataSource-ref="adminDataSource" />
 
-    <bean id="jobLauncher" class="org.springframework.batch.core.launch.support.SimpleJobLauncher"
-          p:jobRepository-ref="jobRepository" />
+    <bean id="syncTaskExecutor" class="org.springframework.core.task.SyncTaskExecutor"/>
+
+    <bean id="jobLauncher" class="org.springframework.batch.core.launch.support.TaskExecutorJobLauncher"
+          p:jobRepository-ref="jobRepository"
+          p:taskExecutor-ref="syncTaskExecutor" />
 
     <bean id="jobOperator" class="org.springframework.batch.core.launch.support.SimpleJobOperator"
           p:jobRepository-ref="jobRepository"

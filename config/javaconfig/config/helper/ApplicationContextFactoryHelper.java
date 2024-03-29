@@ -17,31 +17,37 @@ import java.util.stream.Stream;
 
 public class ApplicationContextFactoryHelper {
 
-    private final PathMatchingResourcePatternResolver pathMatchingResourcePatternResolver =
-            new PathMatchingResourcePatternResolver();
-    private final MetadataReaderFactory metadataReaderFactory =
-            new CachingMetadataReaderFactory(pathMatchingResourcePatternResolver);
+    private final PathMatchingResourcePatternResolver pathMatchingResourcePatternResolver = new PathMatchingResourcePatternResolver();
+
+    private final MetadataReaderFactory metadataReaderFactory = new CachingMetadataReaderFactory(
+            pathMatchingResourcePatternResolver);
 
     private final ClassLoader classLoader = ClassUtils.getDefaultClassLoader();
 
     private final ApplicationContext applicationContext;
 
-    public ApplicationContextFactoryHelper(ApplicationContext applicationContext) {
+    public ApplicationContextFactoryHelper(
+            ApplicationContext applicationContext) {
         this.applicationContext = applicationContext;
     }
 
     public ApplicationContextFactory[] load(String... locations) {
         final Stream<String> locationStream = Stream.of(locations);
         return locationStream
-                .flatMap(loc -> loc.endsWith(".xml") ? createXmlConfigFactories(loc) : createJavaConfigFactories(loc))
+                .flatMap(loc -> loc.endsWith(".xml") ?
+                        createXmlConfigFactories(loc) :
+                        createJavaConfigFactories(loc))
                 .toArray(ApplicationContextFactory[]::new);
     }
 
-    private Stream<ApplicationContextFactory> createXmlConfigFactories(final String xmlConfigPathPattern) {
-        return resolvePatternedResource(xmlConfigPathPattern).map(this::createFactory);
+    private Stream<ApplicationContextFactory> createXmlConfigFactories(
+            final String xmlConfigPathPattern) {
+        return resolvePatternedResource(xmlConfigPathPattern)
+                .map(this::createFactory);
     }
 
-    private Stream<ApplicationContextFactory> createJavaConfigFactories(String javaConfigResourcePattern) {
+    private Stream<ApplicationContextFactory> createJavaConfigFactories(
+            String javaConfigResourcePattern) {
         return resolvePatternedResource(javaConfigResourcePattern)
                 .map(this::loadConfigClassCandidate)
                 .filter(this::hasAnnotatedConfigClass)
@@ -50,7 +56,8 @@ public class ApplicationContextFactoryHelper {
 
     Stream<Resource> resolvePatternedResource(String resourcePattern) {
         try {
-            return Stream.of(pathMatchingResourcePatternResolver.getResources(resourcePattern))
+            return Stream.of(pathMatchingResourcePatternResolver.getResources(
+                            resourcePattern))
                     .filter(Resource::isReadable);
         } catch (IOException e) {
             throw new RuntimeException(e);
@@ -60,19 +67,25 @@ public class ApplicationContextFactoryHelper {
     Class<?> loadConfigClassCandidate(Resource javaConfigResource) {
         final MetadataReader reader;
         try {
-            reader = metadataReaderFactory.getMetadataReader(javaConfigResource);
+            reader = metadataReaderFactory.getMetadataReader(
+                    javaConfigResource);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-        return ClassUtils.resolveClassName(reader.getClassMetadata().getClassName(), classLoader);
+        return ClassUtils.resolveClassName(
+                reader.getClassMetadata().getClassName(), classLoader);
     }
 
     boolean hasAnnotatedConfigClass(Class<?> candidate) {
-        return AnnotationMetadata.introspect(candidate).getAnnotations().isPresent(Configuration.class);
+        return AnnotationMetadata
+                .introspect(candidate)
+                .getAnnotations()
+                .isPresent(Configuration.class);
     }
 
     private ApplicationContextFactory createFactory(Object resource) {
-        final GenericApplicationContextFactory factory = new GenericApplicationContextFactory(resource);
+        final GenericApplicationContextFactory factory = new GenericApplicationContextFactory(
+                resource);
         factory.setApplicationContext(applicationContext);
         return factory;
     }

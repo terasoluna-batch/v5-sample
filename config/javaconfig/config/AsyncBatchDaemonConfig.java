@@ -46,7 +46,8 @@ public class AsyncBatchDaemonConfig {
     }
 
     @Bean
-    public ThreadPoolTaskExecutor daemonTaskExecutor(@Value("${async-batch-daemon.job-concurrency-num:#{null}}") int concurrency) {
+    public ThreadPoolTaskExecutor daemonTaskExecutor(
+            @Value("${async-batch-daemon.job-concurrency-num}") int concurrency) {
         final ThreadPoolTaskExecutor threadPoolTaskExecutor = new ThreadPoolTaskExecutor();
         threadPoolTaskExecutor.setCorePoolSize(concurrency);
         threadPoolTaskExecutor.setMaxPoolSize(concurrency);
@@ -55,39 +56,46 @@ public class AsyncBatchDaemonConfig {
     }
 
     @Bean
-    public ThreadPoolTaskScheduler daemonTaskScheduler(@Value("${async-batch-daemon.scheduler.size:#{null}}") int size) {
+    public ThreadPoolTaskScheduler daemonTaskScheduler(
+            @Value("${async-batch-daemon.scheduler.size}") int size) {
         final ThreadPoolTaskScheduler threadPoolTaskScheduler = new ThreadPoolTaskScheduler();
         threadPoolTaskScheduler.setPoolSize(size);
         return threadPoolTaskScheduler;
     }
 
     @Bean
-    public DataSourceInitializer asyncDataSourceInitializer(@Qualifier("adminDataSource") DataSource adminDataSource,
-                                                       @Value("${data-source.initialize.enabled:false}") boolean enabled,
-                                                       @Value("${async-batch-daemon.schema.script:#{null}}") Resource script,
-                                                       @Value("${terasoluna-batch.commit.script:#{null}}") Resource commitScript) {
+    public DataSourceInitializer asyncDataSourceInitializer(
+            @Qualifier("adminDataSource") DataSource adminDataSource,
+            @Value("${data-source.initialize.enabled:false}") boolean enabled,
+            @Value("${async-batch-daemon.schema.script}") Resource script,
+            @Value("${terasoluna-batch.commit.script}") Resource commitScript) {
         final DataSourceInitializer asyncDataSourceInitializer = new DataSourceInitializer();
         asyncDataSourceInitializer.setDataSource(adminDataSource);
         asyncDataSourceInitializer.setEnabled(enabled);
-        ResourceDatabasePopulator resourceDatabasePopulator = new ResourceDatabasePopulator(script, commitScript);
+        ResourceDatabasePopulator resourceDatabasePopulator = new ResourceDatabasePopulator(
+                script, commitScript);
         resourceDatabasePopulator.setContinueOnError(true);
-        asyncDataSourceInitializer.setDatabasePopulator(resourceDatabasePopulator);
+        asyncDataSourceInitializer.setDatabasePopulator(
+                resourceDatabasePopulator);
         return asyncDataSourceInitializer;
     }
 
     @Bean
-    public JobRequestPollTask jobRequestPollTask(@Qualifier("adminTransactionManager") PlatformTransactionManager adminTransactionManager,
-                                                 JobOperator jobOperator,
-                                                 BatchJobRequestRepository batchJobRequestRepository,
-                                                 @Qualifier("daemonTaskExecutor") ThreadPoolTaskExecutor daemonTaskExecutor,
-                                                 AutomaticJobRegistrar automaticJobRegistrar) {
-        return new JobRequestPollTask(batchJobRequestRepository, adminTransactionManager, daemonTaskExecutor, jobOperator,
-            automaticJobRegistrar);
+    public JobRequestPollTask jobRequestPollTask(
+            @Qualifier("adminTransactionManager") PlatformTransactionManager adminTransactionManager,
+            JobOperator jobOperator,
+            BatchJobRequestRepository batchJobRequestRepository,
+            @Qualifier("daemonTaskExecutor") ThreadPoolTaskExecutor daemonTaskExecutor,
+            AutomaticJobRegistrar automaticJobRegistrar) {
+        return new JobRequestPollTask(batchJobRequestRepository,
+                adminTransactionManager, daemonTaskExecutor, jobOperator,
+                automaticJobRegistrar);
     }
 
     @Bean
-    public SqlSessionFactory adminSqlSessionFactory(@Qualifier("adminDataSource") DataSource adminDataSource,
-                                                    DatabaseIdProvider databaseIdProvider) throws Exception {
+    public SqlSessionFactory adminSqlSessionFactory(
+            @Qualifier("adminDataSource") DataSource adminDataSource,
+            DatabaseIdProvider databaseIdProvider) throws Exception {
         final SqlSessionFactoryBean sqlSessionFactoryBean = new SqlSessionFactoryBean();
         sqlSessionFactoryBean.setDataSource(adminDataSource);
         sqlSessionFactoryBean.setDatabaseIdProvider(databaseIdProvider);
@@ -116,18 +124,23 @@ public class AsyncBatchDaemonConfig {
         final AutomaticJobRegistrar automaticJobRegistrar = new AutomaticJobRegistrar();
         final DefaultJobLoader defaultJobLoader = new DefaultJobLoader();
         defaultJobLoader.setJobRegistry(jobRegistry);
-        automaticJobRegistrar.setApplicationContextFactories(applicationContextFactories);
+        automaticJobRegistrar.setApplicationContextFactories(
+                applicationContextFactories);
         automaticJobRegistrar.setJobLoader(defaultJobLoader);
+        automaticJobRegistrar.afterPropertiesSet();
         return automaticJobRegistrar;
     }
 
     @Bean
-    public ApplicationContextFactory[] applicationContextFactories(final ApplicationContext ctx) throws IOException {
-        return new ApplicationContextFactoryHelper(ctx).load("classpath:/META-INF/jobs/*.xml");
+    public ApplicationContextFactory[] applicationContextFactories(
+            final ApplicationContext ctx) throws IOException {
+        return new ApplicationContextFactoryHelper(ctx).load(
+                "classpath:xxxxxx/yyyyyy/zzzzzz/projectName/jobs/**/*.class");
     }
 
     @Bean
-    public JobRegistryBeanPostProcessor jobRegistryBeanPostProcessor(JobRegistry jobRegistry) {
+    public JobRegistryBeanPostProcessor jobRegistryBeanPostProcessor(
+            JobRegistry jobRegistry) {
         final JobRegistryBeanPostProcessor jobRegistryBeanPostProcessor = new JobRegistryBeanPostProcessor();
         jobRegistryBeanPostProcessor.setJobRegistry(jobRegistry);
         return jobRegistryBeanPostProcessor;
