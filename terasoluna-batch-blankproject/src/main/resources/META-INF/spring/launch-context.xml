@@ -16,7 +16,6 @@
     <context:property-placeholder location="classpath:batch-application.properties"
             system-properties-mode="OVERRIDE"
             ignore-resource-not-found="false"
-            ignore-unresolvable="true"
             order="1"/>
 
     <!-- framework definitions -->
