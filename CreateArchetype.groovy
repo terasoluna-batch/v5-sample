@@ -70,6 +70,12 @@ if (! pom.exists() || ! pom.file) {
     System.exit 5
 }
 
+def propertiesPom = new File(ROOT_DIR, 'pom.xml')
+def xmlslurperPom = new XmlSlurper().parse(propertiesPom)
+def mavenGpgPluginVersion = xmlslurperPom.properties.'maven-gpg-plugin.version'.text()
+def nexusStagingMavenPluginVersion = xmlslurperPom.properties.'nexus-staging-maven-plugin.version'.text()
+def archetypePackagingVersion = xmlslurperPom.properties.'archetype-packaging.version'.text()
+def mavenArchetypePluginVersion = xmlslurperPom.properties.'maven-archetype-plugin.version'.text()
 
 def orgPath = Files.move(pom.toPath(), new File(archetypeDir, 'pom.xml.org').toPath(),
         StandardCopyOption.REPLACE_EXISTING)
@@ -198,10 +204,10 @@ doc.appendNode {
             }
         }
         properties {
-            'maven-gpg-plugin.version' '3.0.1'
-            'nexus-staging-maven-plugin.version' '1.6.13'
-            'archetype-packaging.version' '3.2.0'
-            'maven-archetype-plugin.version' '3.2.0'
+            'maven-gpg-plugin.version' "$mavenGpgPluginVersion"
+            'nexus-staging-maven-plugin.version' "$nexusStagingMavenPluginVersion"
+            'archetype-packaging.version' "$archetypePackagingVersion"
+            'maven-archetype-plugin.version' "$mavenArchetypePluginVersion"
         }
 }
 

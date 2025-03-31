@@ -22,7 +22,7 @@ Set the groupId, artifactId, version and package to suit your project.
 C:\xxx>mvn archetype:generate ^
   -DarchetypeGroupId=org.terasoluna.batch ^
   -DarchetypeArtifactId=terasoluna-batch-archetype ^
-  -DarchetypeVersion=5.6.0.RELEASE
+  -DarchetypeVersion=5.7.0.RELEASE
 ----
 
 * for Bash(Unix, Linux, ...)
@@ -32,7 +32,7 @@ C:\xxx>mvn archetype:generate ^
 $ mvn archetype:generate \
   -DarchetypeGroupId=org.terasoluna.batch \
   -DarchetypeArtifactId=terasoluna-batch-archetype \
-  -DarchetypeVersion=5.6.0.RELEASE
+  -DarchetypeVersion=5.7.0.RELEASE
 ----
 
 ==== For XML Config
@@ -43,7 +43,7 @@ $ mvn archetype:generate \
 C:\xxx>mvn archetype:generate ^
   -DarchetypeGroupId=org.terasoluna.batch ^
   -DarchetypeArtifactId=terasoluna-batch-xmlconfig-archetype ^
-  -DarchetypeVersion=5.6.0.RELEASE
+  -DarchetypeVersion=5.7.0.RELEASE
 ----
 
 * for Bash(Unix, Linux, ...)
@@ -53,7 +53,7 @@ C:\xxx>mvn archetype:generate ^
 $ mvn archetype:generate \
   -DarchetypeGroupId=org.terasoluna.batch \
   -DarchetypeArtifactId=terasoluna-batch-xmlconfig-archetype \
-  -DarchetypeVersion=5.6.0.RELEASE
+  -DarchetypeVersion=5.7.0.RELEASE
 ----
 
 == Run

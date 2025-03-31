@@ -16,8 +16,6 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
-import org.springframework.context.annotation.PropertySource;
-import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.jdbc.datasource.init.DataSourceInitializer;
@@ -36,14 +34,8 @@ import java.util.Properties;
 
 @Configuration
 @Import(LaunchContextConfig.class)
-@PropertySource(value = "classpath:batch-application.properties")
 @EnableScheduling
 public class AsyncBatchDaemonConfig {
-
-    @Bean
-    public static PropertySourcesPlaceholderConfigurer propertySourcesPlaceholderConfigurer() {
-        return new PropertySourcesPlaceholderConfigurer();
-    }
 
     @Bean
     public ThreadPoolTaskExecutor daemonTaskExecutor(
@@ -136,14 +128,6 @@ public class AsyncBatchDaemonConfig {
             final ApplicationContext ctx) throws IOException {
         return new ApplicationContextFactoryHelper(ctx).load(
                 "classpath:xxxxxx/yyyyyy/zzzzzz/projectName/jobs/**/*.class");
-    }
-
-    @Bean
-    public JobRegistryBeanPostProcessor jobRegistryBeanPostProcessor(
-            JobRegistry jobRegistry) {
-        final JobRegistryBeanPostProcessor jobRegistryBeanPostProcessor = new JobRegistryBeanPostProcessor();
-        jobRegistryBeanPostProcessor.setJobRegistry(jobRegistry);
-        return jobRegistryBeanPostProcessor;
     }
 
     @Bean

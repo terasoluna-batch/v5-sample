@@ -6,7 +6,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>xxxxxx.yyyyyy.zzzzzz</groupId>
     <artifactId>projectName</artifactId>
-    <version>5.6.0.RELEASE</version>
+    <version>5.7.0.RELEASE</version>
 
     <name>TERASOLUNA Batch Framework for Java (5.x) Blank Project</name>
     <description>Batch Blank Project using TERASOLUNA Batch Framework for Java (5.x)</description>
@@ -47,49 +47,35 @@
     </repositories>
 
     <properties>
-        <java-version>21</java-version>
+        <java-version>17</java-version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
-        <org.springframework.boot.version>3.2.2</org.springframework.boot.version>
-        <terasoluna-batch.version>5.6.0.RELEASE</terasoluna-batch.version>
+        <terasoluna-batch.version>5.7.0.RELEASE</terasoluna-batch.version>
+        <terasoluna.gfw.bom.version>2.0.0.RELEASE</terasoluna.gfw.bom.version>
 
-        <maven-compiler-plugin.version>3.10.1</maven-compiler-plugin.version>
-        <maven-jar-plugin.version>3.2.2</maven-jar-plugin.version>
+        <maven-compiler-plugin.version>3.13.0</maven-compiler-plugin.version>
+        <maven-jar-plugin.version>3.4.2</maven-jar-plugin.version>
 
-        <!-- == Jakarta == -->
-        <jakarta.el.version>4.0.2</jakarta.el.version>
-
-        <!-- == slf4j-api == -->
-        <slf4j-api.version>2.0.12</slf4j-api.version>
+        <maven-gpg-plugin.version>3.2.7</maven-gpg-plugin.version>
+        <nexus-staging-maven-plugin.version>1.7.0</nexus-staging-maven-plugin.version>
+        <archetype-packaging.version>3.3.1</archetype-packaging.version>
+        <maven-archetype-plugin.version>3.3.1</maven-archetype-plugin.version>
     </properties>
 
     <dependencyManagement>
         <dependencies>
-            <dependency>
-                <groupId>org.springframework.boot</groupId>
-                <artifactId>spring-boot-dependencies</artifactId>
-                <version>${org.springframework.boot.version}</version>
-                <type>pom</type>
-                <scope>import</scope>
-            </dependency>
             <dependency>
                 <groupId>org.terasoluna.batch</groupId>
                 <artifactId>terasoluna-batch</artifactId>
                 <version>${terasoluna-batch.version}</version>
             </dependency>
             <dependency>
-                <groupId>org.glassfish</groupId>
-                <artifactId>jakarta.el</artifactId>
-                <version>${jakarta.el.version}</version>
+                <groupId>org.terasoluna.bom</groupId>
+                <artifactId>terasoluna-dependencies</artifactId>
+                <version>${terasoluna.gfw.bom.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
             </dependency>
-
-            <!-- == Begin slf4j-api == -->
-            <dependency>
-                <groupId>org.slf4j</groupId>
-                <artifactId>slf4j-api</artifactId>
-                <version>${slf4j-api.version}</version>
-            </dependency>
-            <!-- == End slf4j-api == -->
         </dependencies>
     </dependencyManagement>
 
@@ -105,8 +91,8 @@
         </dependency>
 
         <dependency>
-            <groupId>org.glassfish</groupId>
-            <artifactId>jakarta.el</artifactId>
+            <groupId>org.apache.tomcat.embed</groupId>
+            <artifactId>tomcat-embed-el</artifactId>
             <scope>runtime</scope>
         </dependency>
 
@@ -209,12 +195,12 @@
         </profile>
 
         <profile>
-            <id>jdk17</id>
+            <id>jdk21</id>
             <activation>
-                <jdk>17</jdk>
+                <jdk>21</jdk>
             </activation>
             <properties>
-                <java-version>17</java-version>
+                <java-version>21</java-version>
             </properties>
         </profile>
     </profiles>
