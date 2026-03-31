@@ -45,28 +45,16 @@
 
     <bean id="jobRegistry" class="org.springframework.batch.core.configuration.support.MapJobRegistry"/>
 
-    <bean id="jobExplorer" class="org.springframework.batch.core.explore.support.JobExplorerFactoryBean"
-          p:dataSource-ref="adminDataSource"
-          p:transactionManager-ref="adminTransactionManager"/>
-
     <bean id="jobParametersConverter" class="org.terasoluna.batch.converter.JobParametersConverterImpl"
           c:dataSource-ref="adminDataSource" />
 
-    <bean id="syncTaskExecutor" class="org.springframework.core.task.SyncTaskExecutor"/>
+    <bean id="taskExecutor" class="org.springframework.core.task.SyncTaskExecutor"/>
 
-    <bean id="jobLauncher" class="org.springframework.batch.core.launch.support.TaskExecutorJobLauncher"
-          p:jobRepository-ref="jobRepository"
-          p:taskExecutor-ref="syncTaskExecutor" />
-
-    <bean id="jobOperator" class="org.springframework.batch.core.launch.support.SimpleJobOperator"
+    <bean id="jobOperator" class="org.springframework.batch.core.launch.support.TaskExecutorJobOperator"
           p:jobRepository-ref="jobRepository"
           p:jobRegistry-ref="jobRegistry"
-          p:jobExplorer-ref="jobExplorer"
           p:jobParametersConverter-ref="jobParametersConverter"
-          p:jobLauncher-ref="jobLauncher" />
-
-    <bean class="org.springframework.batch.core.configuration.support.JobRegistrySmartInitializingSingleton"
-          p:jobRegistry-ref="jobRegistry"/>
+          p:taskExecutor-ref="taskExecutor" />
 
     <bean id="exitCodeMapper" class="org.springframework.batch.core.launch.support.SimpleJvmExitCodeMapper">
         <property name="mapping">
@@ -111,7 +99,7 @@
     <bean id="messageSource" class="org.springframework.context.support.ResourceBundleMessageSource"
           p:basenames="i18n/application-messages" />
 
-    <bean id="validator" class="org.springframework.batch.item.validator.SpringValidator"
+    <bean id="validator" class="org.springframework.batch.infrastructure.item.validator.SpringValidator"
           p:validator-ref="beanValidator"/>
 
     <bean id="beanValidator"
@@ -134,5 +122,5 @@
           c:executorType="BATCH" />
 
     <bean id="jobResourcelessTransactionManager"
-          class="org.springframework.batch.support.transaction.ResourcelessTransactionManager"/>
+          class="org.springframework.batch.infrastructure.support.transaction.ResourcelessTransactionManager"/>
 </beans>

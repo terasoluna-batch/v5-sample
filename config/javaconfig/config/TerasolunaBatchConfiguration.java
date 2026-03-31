@@ -1,16 +1,17 @@
 package xxxxxx.yyyyyy.zzzzzz.projectName.config;
 
 import org.springframework.batch.core.configuration.BatchConfigurationException;
-import org.springframework.batch.core.configuration.support.DefaultBatchConfiguration;
+import org.springframework.batch.core.configuration.support.JdbcDefaultBatchConfiguration;
+import org.springframework.batch.core.configuration.support.MapJobRegistry;
 import org.springframework.batch.core.launch.JobOperator;
 import org.springframework.batch.core.configuration.JobRegistry;
-import org.springframework.batch.core.explore.JobExplorer;
-import org.springframework.batch.core.launch.JobLauncher;
 import org.springframework.batch.core.launch.support.JobOperatorFactoryBean;
 import org.springframework.batch.core.repository.JobRepository;
-import org.springframework.batch.core.repository.support.JobRepositoryFactoryBean;
+import org.springframework.batch.core.repository.support.JdbcJobRepositoryFactoryBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.task.SyncTaskExecutor;
+import org.springframework.core.task.TaskExecutor;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.Isolation;
 import org.terasoluna.batch.converter.JobParametersConverterImpl;
@@ -18,9 +19,9 @@ import org.terasoluna.batch.converter.JobParametersConverterImpl;
 import javax.sql.DataSource;
 
 @Configuration
-public class TerasolunaBatchConfiguration extends DefaultBatchConfiguration {
+public class TerasolunaBatchConfiguration extends JdbcDefaultBatchConfiguration {
 
-    // DefaultBatchConfiguration searches for the data source bean name using "dataSource",
+    // JdbcDefaultBatchConfiguration searches for the data source bean name using "dataSource",
     // so override getDataSource and modify it to search using "adminDataSource".
     @Override
     protected DataSource getDataSource() {
@@ -42,7 +43,7 @@ public class TerasolunaBatchConfiguration extends DefaultBatchConfiguration {
                 DataSource.class);
     }
 
-    // DefaultBatchConfiguration searches for the data source bean name using "transactionManager",
+    // JdbcDefaultBatchConfiguration searches for the data source bean name using "transactionManager",
     // so override getTransactionManager and modify it to search using "adminTransactionManager".
     @Override
     protected PlatformTransactionManager getTransactionManager() {
@@ -67,67 +68,67 @@ public class TerasolunaBatchConfiguration extends DefaultBatchConfiguration {
 
     // The default transaction isolation level of JobRepository is "SERIALIZABLE",
     // so override the bean definition and correct it to "READ COMMITTED"
-    @Override
     @Bean
+    @Override
     public JobRepository jobRepository() throws BatchConfigurationException {
-        JobRepositoryFactoryBean jobRepositoryFactoryBean = new JobRepositoryFactoryBean();
-        jobRepositoryFactoryBean.setDataSource(
-                getDataSource()); // get and set adminDataSource
-        jobRepositoryFactoryBean.setTransactionManager(
-                getTransactionManager()); // get and set adminTransactionManager
-        jobRepositoryFactoryBean.setIncrementerFactory(getIncrementerFactory());
-        jobRepositoryFactoryBean.setClobType(getClobType());
-        jobRepositoryFactoryBean.setTablePrefix(getTablePrefix());
-        jobRepositoryFactoryBean.setSerializer(getExecutionContextSerializer());
-        jobRepositoryFactoryBean.setConversionService(getConversionService());
-        jobRepositoryFactoryBean.setJdbcOperations(getJdbcOperations());
-        jobRepositoryFactoryBean.setLobHandler(getLobHandler());
-        jobRepositoryFactoryBean.setCharset(getCharset());
-        jobRepositoryFactoryBean.setMaxVarCharLength(getMaxVarCharLength());
-        jobRepositoryFactoryBean.setIsolationLevelForCreateEnum(
-                Isolation.READ_COMMITTED); // changed from SERIALIZABLE
-        jobRepositoryFactoryBean.setValidateTransactionState(
-                getValidateTransactionState());
-
+        JdbcJobRepositoryFactoryBean jobRepositoryFactoryBean = new JdbcJobRepositoryFactoryBean();
         try {
+            jobRepositoryFactoryBean.setDataSource(getDataSource()); // get and set adminDataSource
+            jobRepositoryFactoryBean.setTransactionManager(getTransactionManager()); // get and set adminTransactionManager
             jobRepositoryFactoryBean.setDatabaseType(getDatabaseType());
+            jobRepositoryFactoryBean.setIncrementerFactory(getIncrementerFactory());
+            jobRepositoryFactoryBean.setJobKeyGenerator(getJobKeyGenerator());
+            jobRepositoryFactoryBean.setClobType(getClobType());
+            jobRepositoryFactoryBean.setTablePrefix(getTablePrefix());
+            jobRepositoryFactoryBean.setSerializer(getExecutionContextSerializer());
+            jobRepositoryFactoryBean.setConversionService(getConversionService());
+            jobRepositoryFactoryBean.setJdbcOperations(getJdbcOperations());
+            jobRepositoryFactoryBean.setCharset(getCharset());
+            jobRepositoryFactoryBean.setMaxVarCharLength(getMaxVarCharLength());
+            jobRepositoryFactoryBean.setIsolationLevelForCreateEnum(Isolation.READ_COMMITTED); // changed from SERIALIZABLE
+            jobRepositoryFactoryBean.setValidateTransactionState(getValidateTransactionState());
             jobRepositoryFactoryBean.afterPropertiesSet();
             return jobRepositoryFactoryBean.getObject();
-
         } catch (BatchConfigurationException e) {
             throw e;
         } catch (Exception e) {
-            throw new BatchConfigurationException(
-                    "Unable to configure the customized job repository", e);
+            throw new BatchConfigurationException("Unable to configure the customized job repository", e);
         }
     }
 
     // The implementation class of JobOperator's default JobParametersConverter is "DefaultJobParametersConverter",
     // so override the bean definition and correct it to "JobParametersConverterImpl"
-    @Override
     @Bean
-    public JobOperator jobOperator(JobRepository jobRepository, JobExplorer jobExplorer, JobRegistry jobRegistry, JobLauncher jobLauncher) throws BatchConfigurationException {
+    @Override
+    public JobOperator jobOperator(JobRepository jobRepository) throws BatchConfigurationException {
         JobOperatorFactoryBean jobOperatorFactoryBean = new JobOperatorFactoryBean();
-        jobOperatorFactoryBean.setTransactionManager(this.getTransactionManager());
         jobOperatorFactoryBean.setJobRepository(jobRepository);
-        jobOperatorFactoryBean.setJobExplorer(jobExplorer);
-        jobOperatorFactoryBean.setJobRegistry(jobRegistry);
-        jobOperatorFactoryBean.setJobLauncher(jobLauncher);
+        jobOperatorFactoryBean.setJobRegistry(jobRegistry());
+        jobOperatorFactoryBean.setTransactionManager(getTransactionManager());
+        jobOperatorFactoryBean.setObservationRegistry(getObservationRegistry());
         JobParametersConverterImpl jobParametersConverter = new JobParametersConverterImpl(
                 getDataSource());
         jobOperatorFactoryBean.setJobParametersConverter(
                 jobParametersConverter); // changed from JobParametersConverterImpl
-
+        jobOperatorFactoryBean.setTaskExecutor(taskExecutor());
         try {
             jobParametersConverter.afterPropertiesSet();
             jobOperatorFactoryBean.afterPropertiesSet();
             return jobOperatorFactoryBean.getObject();
-
         } catch (BatchConfigurationException e) {
             throw e;
         } catch (Exception e) {
-            throw new BatchConfigurationException(
-                    "Unable to configure the customized job operator", e);
+            throw new BatchConfigurationException("Unable to configure the customized job operator", e);
         }
+    }
+
+    @Bean
+    public TaskExecutor taskExecutor() {
+        return new SyncTaskExecutor();
+    }
+
+    @Bean
+    public JobRegistry jobRegistry() {
+        return new MapJobRegistry();
     }
 }

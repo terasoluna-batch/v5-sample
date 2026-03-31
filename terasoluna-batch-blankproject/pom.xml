@@ -6,7 +6,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>xxxxxx.yyyyyy.zzzzzz</groupId>
     <artifactId>projectName</artifactId>
-    <version>5.7.0.RELEASE</version>
+    <version>5.8.0.RELEASE</version>
 
     <name>TERASOLUNA Batch Framework for Java (5.x) Blank Project</name>
     <description>Batch Blank Project using TERASOLUNA Batch Framework for Java (5.x)</description>
@@ -50,14 +50,14 @@
         <java-version>17</java-version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
-        <terasoluna-batch.version>5.7.0.RELEASE</terasoluna-batch.version>
-        <terasoluna.gfw.bom.version>2.0.0.RELEASE</terasoluna.gfw.bom.version>
+        <terasoluna-batch.version>5.8.0.RELEASE</terasoluna-batch.version>
+        <terasoluna.gfw.bom.version>3.0.0.RELEASE</terasoluna.gfw.bom.version>
 
         <maven-compiler-plugin.version>3.13.0</maven-compiler-plugin.version>
         <maven-jar-plugin.version>3.4.2</maven-jar-plugin.version>
 
-        <maven-gpg-plugin.version>3.2.7</maven-gpg-plugin.version>
-        <nexus-staging-maven-plugin.version>1.7.0</nexus-staging-maven-plugin.version>
+        <maven-gpg-plugin.version>3.2.8</maven-gpg-plugin.version>
+        <central-publishing-maven-plugin.version>0.10.0</central-publishing-maven-plugin.version>
         <archetype-packaging.version>3.3.1</archetype-packaging.version>
         <maven-archetype-plugin.version>3.3.1</maven-archetype-plugin.version>
     </properties>

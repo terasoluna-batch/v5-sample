@@ -15,7 +15,7 @@
     <context:component-scan base-package="xxxxxx.yyyyyy.zzzzzz.projectName.job01" />
     <mybatis:scan           base-package="xxxxxx.yyyyyy.zzzzzz.projectName.job01" factory-ref="jobSqlSessionFactory"/>
 
-    <bean id="employeeReader" class="org.springframework.batch.item.support.ListItemReader" scope="step">
+    <bean id="employeeReader" class="org.springframework.batch.infrastructure.item.support.ListItemReader" scope="step">
         <constructor-arg>
             <list value-type="xxxxxx.yyyyyy.zzzzzz.projectName.job01.Employee">
                 <bean class="xxxxxx.yyyyyy.zzzzzz.projectName.job01.Employee" p:empId="1" p:empName="scott" />
@@ -27,17 +27,17 @@
         </constructor-arg>
     </bean>
 
-    <bean id="employeeWriter" class="org.springframework.batch.item.file.FlatFileItemWriter"
-            p:resource="file:target/output.csv">
-        <property name="lineAggregator">
-            <bean class="org.springframework.batch.item.file.transform.DelimitedLineAggregator"
-                    p:delimiter=",">
+    <bean id="employeeWriter" class="org.springframework.batch.infrastructure.item.file.FlatFileItemWriter"
+          p:resource="file:target/output.csv">
+        <constructor-arg>
+            <bean class="org.springframework.batch.infrastructure.item.file.transform.DelimitedLineAggregator"
+                  p:delimiter=",">
                 <property name="fieldExtractor">
-                    <bean class="org.springframework.batch.item.file.transform.BeanWrapperFieldExtractor"
-                        p:names="empId,empName"/>
+                    <bean class="org.springframework.batch.infrastructure.item.file.transform.BeanWrapperFieldExtractor"
+                          p:names="empId,empName"/>
                 </property>
             </bean>
-        </property>
+        </constructor-arg>
     </bean>
 
     <batch:job id="job01" job-repository="jobRepository">
