@@ -1,4 +1,5 @@
 import groovy.xml.XmlUtil
+import groovy.xml.XmlSlurper
 import org.w3c.dom.Document
 
 import javax.xml.parsers.DocumentBuilderFactory
@@ -73,7 +74,7 @@ if (! pom.exists() || ! pom.file) {
 def propertiesPom = new File(ROOT_DIR, 'pom.xml')
 def xmlslurperPom = new XmlSlurper().parse(propertiesPom)
 def mavenGpgPluginVersion = xmlslurperPom.properties.'maven-gpg-plugin.version'.text()
-def nexusStagingMavenPluginVersion = xmlslurperPom.properties.'nexus-staging-maven-plugin.version'.text()
+def centralPublishingMavenPluginVersion = xmlslurperPom.properties.'central-publishing-maven-plugin.version'.text()
 def archetypePackagingVersion = xmlslurperPom.properties.'archetype-packaging.version'.text()
 def mavenArchetypePluginVersion = xmlslurperPom.properties.'maven-archetype-plugin.version'.text()
 
@@ -155,16 +156,6 @@ doc.appendNode {
             }
             profile {
                 id 'central'
-                distributionManagement {
-                    repository {
-                        id 'ossrh'
-                        url 'https://oss.sonatype.org/service/local/staging/deploy/maven2/'
-                    }
-                    snapshotRepository {
-                        id 'ossrh'
-                        url 'https://oss.sonatype.org/content/repositories/snapshots'
-                    }
-                }
                 build {
                     plugins {
                         plugin {
@@ -189,14 +180,13 @@ doc.appendNode {
 
                         }
                         plugin {
-                            groupId 'org.sonatype.plugins'
-                            artifactId 'nexus-staging-maven-plugin'
-                            version '${nexus-staging-maven-plugin.version}'
+                            groupId 'org.sonatype.central'
+                            artifactId 'central-publishing-maven-plugin'
+                            version '${central-publishing-maven-plugin.version}'
                             extensions 'true'
                             configuration {
-                                serverId 'ossrh'
-                                nexusUrl 'https://oss.sonatype.org/'
-                                autoReleaseAfterClose 'true'
+                                publishingServerId 'central'
+                                autoPublish 'true'
                             }
                         }
                     }
@@ -205,7 +195,7 @@ doc.appendNode {
         }
         properties {
             'maven-gpg-plugin.version' "$mavenGpgPluginVersion"
-            'nexus-staging-maven-plugin.version' "$nexusStagingMavenPluginVersion"
+            'central-publishing-maven-plugin.version' "$centralPublishingMavenPluginVersion"
             'archetype-packaging.version' "$archetypePackagingVersion"
             'maven-archetype-plugin.version' "$mavenArchetypePluginVersion"
         }
